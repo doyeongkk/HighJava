@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/dtd.map-2.dtd">
+	
+<sqlMap namespace="board">
+	<insert id = "insertBoard" parameterClass = "boardVo">
+		INSERT INTO jdbc_board (board_no, board_title, board_writer, board_date, board_cnt, board_content)
+		 VALUES ( board_seq.nextval , #board_title#, #board_writer#, SYSDATE, 0, #board_content# )
+	</insert>
+	
+	<update id = "updateBoard" parameterClass = "boardVo">
+		UPDATE jdbc_board SET board_title = #board_title# , board_date = SYSDATE, board_content = #board_content#
+		 WHERE board_no = #board_no#
+	</update>
+	
+	<delete id ="deleteBoard" parameterClass = "int">
+		DELETE FROM jdbc_board WHERE board_no = #board_no#
+	</delete>
+	
+	<select id ="getAllBoard" resultClass = "boardVo">
+		SELECT board_no, board_title, board_writer, to_char(board_date, 'YYYY-MM-DD') board_date, 
+		board_cnt, board_content FROM jdbc_board ORDER BY board_no DESC
+	</select>
+	
+	<select id = "getBoard" resultClass = "boardVo" parameterClass = "int">
+		SELECT board_no, board_title, board_writer, 
+		  to_char(board_date, 'YYYY-MM-DD') board_date, 
+		  board_cnt, board_content FROM jdbc_board WHERE board_no = #board_no#
+	</select>
+	
+	<update id = "setCount" parameterClass = "int">
+		UPDATE jdbc_board SET  board_cnt = board_cnt + 1  WHERE board_no = #board_no# 
+	</update>
+	
+	<select id = "getSearch" resultClass = "boardVo" parameterClass = "String">
+		SELECT board_no, board_title, board_writer,  to_char(board_date, 'YYYY-MM-DD') board_date, 
+			 board_cnt, board_content FROM jdbc_board  WHERE board_title like '%' || #board_title# || '%'  ORDER BY board_no DESC
+	</select>
+	
+</sqlMap>
